@@ -16,17 +16,18 @@ def ccfIterateReduce(key, values) :
                 counter+=1
     return (list_couple,counter)
 
-def main():
+def connected_components_v1(list_input):
     boole=False
-    list_input = sc.parallelize([(1,2),(2,3),(2,4),(4,5),(6,7),(7,8)])
     while(boole==False):
       list_input = list_input.flatMap(lambda x : [x,(x[1],x[0])]).groupByKey().flatMap(lambda x:[ccfIterateReduce(x[0],list(x[1]))])
       boole=list_input.filter(lambda x : x[1]!=0).isEmpty()
       list_input=list_input.flatMap(lambda x : x[0]).distinct()
     print(list_input.collect())
-main()
 
-resultat : [(8, 6), (5, 1), (3, 1), (7, 6), (4, 1), (2, 1)]
+list_input = sc.parallelize([(1,2),(2,3),(2,4),(4,5),(6,7),(7,8)])
+connected_components_v1(list_input)
+
+#resultat : [(8, 6), (5, 1), (3, 1), (7, 6), (4, 1), (2, 1)]
 
 #Version2
 
@@ -42,18 +43,18 @@ def ccfIterateReduce(key, values) :
                 counter+=1
     return (list_couple,counter)
 
-def main():
+def connected_components_v2(list_input):
     boole=False
-    list_input = sc.parallelize([(1,2),(2,3),(2,4),(4,5),(6,7),(7,8)])
     while(boole==False):
       list_input = list_input.flatMap(lambda x : [x,(x[1],x[0])]).groupByKey().flatMap(lambda x:[ccfIterateReduce(x[0],sorted(x[1]))])
       boole=list_input.filter(lambda x : x[1]!=0).isEmpty()
       list_input=list_input.flatMap(lambda x : x[0]).distinct()
     print(list_input.collect())
-main()
 
+list_input = sc.parallelize([(1,2),(2,3),(2,4),(4,5),(6,7),(7,8)])
+connected_components_v2(list_input)
 
-resultat : [(8, 6), (5, 1), (3, 1), (7, 6), (4, 1), (2, 1)]
+#resultat : [(8, 6), (5, 1), (3, 1), (7, 6), (4, 1), (2, 1)]
 
 
 
