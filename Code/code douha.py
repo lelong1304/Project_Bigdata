@@ -85,7 +85,7 @@ connected_components_v2(list_input)
 
 #resultat : [(8, 6), (5, 1), (3, 1), (7, 6), (4, 1), (2, 1)]
 
-#version 2.1
+#version 2.2
 def ccfIterateReduce_v2(key, values) :
     list_couple=[]
     counter=0
