@@ -1,7 +1,7 @@
 
 #Version1:
 
-def ccfIterateReduce(key, values) :
+def ccfIterateReduce_v1(key, values) :
     list_couple=[]
     counter=0
     min = key
@@ -18,20 +18,29 @@ def ccfIterateReduce(key, values) :
 
 def connected_components_v1(list_input):
     boole=False
+    i=0
     while(boole==False):
-      list_input = list_input.flatMap(lambda x : [x,(x[1],x[0])]).groupByKey().flatMap(lambda x:[ccfIterateReduce(x[0],list(x[1]))])
+      list_input = list_input.flatMap(lambda x : [x,(x[1],x[0])]).groupByKey().flatMap(lambda x:[ccfIterateReduce_v1(x[0],list(x[1]))])
       boole=list_input.filter(lambda x : x[1]!=0).isEmpty()
       list_input=list_input.flatMap(lambda x : x[0]).distinct()
+      i+=1
     print(list_input.collect())
-
+    print("Nombre d'itérations : ",i)
+    return list_input
+    
+def number_of_connected_components_v1(list_input):
+    list=connected_components_v1(list_input).map(lambda x : (x[1],x[0])).groupByKey()
+    print("Number of connected components: ",list.count())
+    
 list_input = sc.parallelize([(1,2),(2,3),(2,4),(4,5),(6,7),(7,8)])
 connected_components_v1(list_input)
+number_of_connected_components(list_input)
 
 #resultat : [(8, 6), (5, 1), (3, 1), (7, 6), (4, 1), (2, 1)]
 
 #version 1.2:
 
-def ccfIterateReduce(key, values) :
+def ccfIterateReduce_v1(key, values) :
     list_couple=[]
     counter=0
     min = key
@@ -49,7 +58,7 @@ def ccfIterateReduce(key, values) :
 def connected_components_v1(list_input):
     boole=False
     while(boole==False):
-      list_input = list_input.flatMap(lambda x : [x,(x[1],x[0])]).groupByKey().flatMap(lambda x:[ccfIterateReduce(x[0],list(x[1]))])
+      list_input = list_input.flatMap(lambda x : [x,(x[1],x[0])]).groupByKey().flatMap(lambda x:[ccfIterateReduce_v1(x[0],list(x[1]))])
       boole=list_input.filter(lambda x : x[1]!=0).isEmpty()
       list_input=list_input.flatMap(lambda x : x[0]).distinct()
     print(list_input.sortBy(lambda x : x[1]).collect())
@@ -60,7 +69,7 @@ connected_components_v1(list_input)
 
 #Version2
 
-def ccfIterateReduce(key, values) :
+def ccfIterateReduce_v2(key, values) :
     list_couple=[]
     counter=0
     min = values[0]
@@ -74,14 +83,23 @@ def ccfIterateReduce(key, values) :
 
 def connected_components_v2(list_input):
     boole=False
+    i=0
     while(boole==False):
-      list_input = list_input.flatMap(lambda x : [x,(x[1],x[0])]).groupByKey().flatMap(lambda x:[ccfIterateReduce(x[0],sorted(x[1]))])
+      list_input = list_input.flatMap(lambda x : [x,(x[1],x[0])]).groupByKey().flatMap(lambda x:[ccfIterateReduce_v2(x[0],sorted(x[1]))])
       boole=list_input.filter(lambda x : x[1]!=0).isEmpty()
       list_input=list_input.flatMap(lambda x : x[0]).distinct()
+      i+=1
     print(list_input.collect())
+    print("Nombre d'itérations : ",i)
+    return list_input
+    
+def number_of_connected_components_v2(list_input):
+    list=connected_components_v2(list_input).map(lambda x : (x[1],x[0])).groupByKey()
+    print("Number of connected components: ",list.count())
 
 list_input = sc.parallelize([(1,2),(2,3),(2,4),(4,5),(6,7),(7,8)])
 connected_components_v2(list_input)
+number_of_connected_components(list_input)
 
 #resultat : [(8, 6), (5, 1), (3, 1), (7, 6), (4, 1), (2, 1)]
 
@@ -110,6 +128,7 @@ list_input = sc.parallelize([(1,2),(2,3),(2,4),(4,5),(6,7),(7,8)])
 connected_components_v3(list_input)
 
 #resultat : [(5, 1), (3, 1), (4, 1), (2, 1), (8, 6), (7, 6)]
+
 
 
 
